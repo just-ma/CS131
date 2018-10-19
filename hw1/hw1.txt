@@ -1,0 +1,20 @@
+1) subset
+The most natural approach worked out in the end. It made sense for a to be a subset of b if all elements of a were contained in b. This was easily achievable with for_all and exists boolean functions.
+
+2) equal_sets
+I initially tried to simplify the complexity by having the second statement be the length of a = the length of b. However, I quickly realized this did not work out for sets with duplicates. 
+
+3) set_union
+This was much trickier than the previous two, because it returned a set rather than a boolean. I relied on filter for the other set functions, but this required returning a set larger than the parts. So, I used pattern matching and the set_diff function to recursively build add elements of b that weren’t in a into a. Once sets were equal, I used sort_uniq to filter out duplicates of a, a union set. Since the set_diff function was used, I placed set_diff before this function in hw1.ml.
+
+4) set_intersection
+I simply used filter to take all elements in a that also existed in b.
+
+5) set_diff
+This function was very similar to set_intersection. I used filter to take all elements in a that did not exist in b.
+
+6) computed_fixed_point
+Recursion was an obvious choice for this function. Pattern matching was used to check if the f(x) = x condition was met. To save extra computation, I created a local variable to hold the value of f(x).
+
+7) filter_reachable
+The first problem was figuring out how to use computed_fixed_point in this function. I could not pass one rule/symbol at a time with each recursive call. I could also not alter an outside list to store all the reachable symbols, since that would violate functional programming. Finally, I realized I needed to pass a list of symbols through each time, with the list growing as it reaches more rules. To manage all the calculations, I separated chunks of the problem into variables.
