@@ -1,0 +1,57 @@
+================================================================================
+convert_grammar
+
+The first challenge was figuring out how to return a grammar, which was a data
+structure I've never worked with before. Once I understood how function worked,
+I attempted to convert every rule through recursion, which got messy very fast.
+I tried incrementally building a function recursively until all rules were 
+converted. Eventually, I learned that OCaml pretty much does the work for you
+with pattern matching. The code ended up being only 2 lines. I used some List
+modules to save me some code.
+
+================================================================================
+parse_prefix
+
+Just like homework 1, this function became really difficult to visualize, so I
+planned out the algorithms on paper to get an overview of it before writing
+anything in code. I quickly realized I would need 2 recursive functions:
+
+1. matcher
+The first matcher selects all the rules with the matching starting symbol. It 
+parses through this list and checks whether each rule matches the frag using
+secondmatcher. If secondmatcher returns None, that means the rule does not 
+match, and matcher will move onto the next rule. If secondmatcher returns Some
+list of terminals, matcher will go a layer deeper and check all the rules
+with the matching starting symbol of the next symbol. Finally, once it hits a
+point where all rules passed to secondmatcher return None, it returns its Some
+list of terminals or None.
+
+2. secondmatcher
+The secondmatcher function looks at a specific rule and recursively checks if
+each symbol in the rule is matched. This function is pretty straightforward
+when it deals with terminal symbols. However, if a nonterminal symbol is
+reached, it called the first matcher function and finds all rules with the
+matching starting symbol. So, both functions call each other until it filters
+down to nonterminals. When a match is found for a rule, secondmatcher returns
+Some list of terminals for matcher. Else, it returns None.
+
+parse_prefix takes a grammar, acceptor and fragment and runs these two 
+recursive functions to find a matching prefix. I ran into non-matching term
+errors in compilation. Debugging these helped me learn how to read OCaml's
+return syntax.
+
+================================================================================
+Shortcomings
+
+A shortcoming that comes out of the recursive nature is endless recursion,
+which occurs when blind alleys are present. parse_prefix will continuously
+check nonterminals in a loop and become stuck. The easiest way to fix this
+would be to modify the grammar itself. Once it is ensured that circular rules 
+do not exist, the function will not get stuck in an endless loop.
+
+Another shortcoming, which was specified in the spec, is how parse_prefix does
+not find the longest match in ambiguous fragments. It only goes down the first
+path the works and sticks to it. A smarter function would check every single
+combination of parses and select the longest one.
+
+================================================================================
